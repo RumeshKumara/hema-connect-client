@@ -1,12 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState("English");
+  const languageMenuRef = useRef<HTMLDivElement | null>(null);
+
+  const languageOptions = ["English", "Sinhala", "Tamil"];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,6 +22,21 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const handlePointerDown = (event: MouseEvent) => {
+      if (
+        languageMenuRef.current &&
+        !languageMenuRef.current.contains(event.target as Node)
+      ) {
+        setIsLanguageMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handlePointerDown);
+
+    return () => document.removeEventListener("mousedown", handlePointerDown);
   }, []);
 
   // Primary navigation links used in desktop and mobile menus.
@@ -78,23 +98,71 @@ export default function Navbar() {
 
         {/* Utility actions: language switch and login button. */}
         <div className="flex items-center gap-3 sm:gap-4">
-          <button
-            type="button"
-            className="hidden items-center gap-2 text-sm font-medium text-[#222] md:inline-flex"
-          >
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 24 24"
-              className="h-5 w-5"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
+          <div ref={languageMenuRef} className="relative hidden md:block">
+            <button
+              type="button"
+              aria-haspopup="menu"
+              aria-expanded={isLanguageMenuOpen}
+              onClick={() => setIsLanguageMenuOpen((current) => !current)}
+              className="inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium text-[#222] transition hover:bg-red-50/70"
             >
-              <circle cx="12" cy="12" r="9" />
-              <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" />
-            </svg>
-            English
-          </button>
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                className="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+              >
+                <circle cx="12" cy="12" r="9" />
+                <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" />
+              </svg>
+              {selectedLanguage}
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                className={`h-4 w-4 transition-transform ${
+                  isLanguageMenuOpen ? "rotate-180" : "rotate-0"
+                }`}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+
+            {isLanguageMenuOpen ? (
+              <div
+                role="menu"
+                className="absolute right-0 top-full z-40 mt-2 min-w-36 overflow-hidden rounded-2xl border border-red-100 bg-white py-1 shadow-[0_10px_25px_rgba(0,0,0,0.15)]"
+              >
+                {languageOptions.map((language) => {
+                  const isSelected = selectedLanguage === language;
+
+                  return (
+                    <button
+                      key={language}
+                      type="button"
+                      role="menuitem"
+                      onClick={() => {
+                        setSelectedLanguage(language);
+                        setIsLanguageMenuOpen(false);
+                      }}
+                      className={`flex w-full items-center justify-between px-4 py-2 text-left text-sm transition ${
+                        isSelected
+                          ? "bg-red-50 text-red-600"
+                          : "text-[#222] hover:bg-red-50/70"
+                      }`}
+                    >
+                      {language}
+                      {isSelected ? <span aria-hidden="true">✓</span> : null}
+                    </button>
+                  );
+                })}
+              </div>
+            ) : null}
+          </div>
 
           <button
             type="button"
