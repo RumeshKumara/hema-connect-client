@@ -2,10 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { getDashboardRoute } from "@/app/lib/userProfiles";
+import { useAuth } from "@/app/context/AuthContext";
 
 export default function Navbar() {
+  const router = useRouter();
   const pathname = usePathname();
+  const { user, profile, signOut } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("English");
@@ -45,6 +49,13 @@ export default function Navbar() {
     { href: "/about", label: "About" },
     { href: "/contact", label: "Contact" },
   ];
+
+  const dashboardHref = profile ? getDashboardRoute(profile.accountType) : "/login";
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push("/login");
+  };
 
   return (
     // Fixed site header with brand, nav links, and action buttons.
@@ -164,12 +175,30 @@ export default function Navbar() {
             ) : null}
           </div>
 
-          <button
-            type="button"
-            className="rounded-full bg-red-500 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-red-600"
-          >
-            Login
-          </button>
+          {user && profile ? (
+            <>
+              <Link
+                href={dashboardHref}
+                className="rounded-full border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-800 transition hover:bg-zinc-100"
+              >
+                Dashboard
+              </Link>
+              <button
+                type="button"
+                onClick={handleSignOut}
+                className="rounded-full bg-zinc-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-800"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              className="rounded-full bg-red-500 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-red-600"
+            >
+              Login
+            </Link>
+          )}
         </div>
       </nav>
 

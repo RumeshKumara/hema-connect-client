@@ -27,6 +27,64 @@ To learn more about Next.js, take a look at the following resources:
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
+## Firebase Auth and Role Flow
+
+This project now includes a Firebase Auth + Firestore authentication flow with role-based dashboards.
+
+### 1) Configure Firebase
+
+1. Copy `.env.example` to `.env.local`.
+2. Add your Firebase web app config values.
+3. Ensure Authentication is enabled in Firebase Console:
+	 - Email/Password
+	 - Google provider
+
+### 2) Firestore user profile model
+
+Each authenticated user must have a Firestore document at `users/{uid}`:
+
+```json
+{
+	"uid": "firebase-auth-uid",
+	"fullName": "Jane Doe",
+	"email": "jane@example.com",
+	"accountType": "donor"
+}
+```
+
+Allowed `accountType` values:
+
+- `admin`
+- `donor`
+- `organization`
+
+### 3) Auth pages
+
+- `/login`
+	- Email Address
+	- Password
+	- Continue with Sign in with Google
+- `/register`
+	- Full Name
+	- Email Address
+	- Account Type (`donor` or `organization`)
+	- Password
+
+### 4) Route behavior
+
+- Admin users are redirected to `/admin/dashboard`.
+- Donor users are redirected to `/donor/dashboard`.
+- Organization users are redirected to `/organization/dashboard`.
+
+### 5) Admin account setup
+
+For an admin login, pre-create the admin in both places:
+
+1. Firebase Authentication user (email/password).
+2. Firestore `users/{uid}` document with `accountType: "admin"`.
+
+Once that admin user signs in, they are routed to the admin dashboard automatically.
+
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
 ## Deploy on Vercel

@@ -2,9 +2,6 @@ export default function ContactPage() {
   return (
     <section className="bg-[#ededee] px-6 pb-24 pt-30 sm:px-10 lg:px-16">
       <div className="mx-auto w-full max-w-6xl">
-        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-red-500">
-          Contact
-        </p>
         <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-zinc-900 sm:text-5xl">
           Get in Touch
         </h1>

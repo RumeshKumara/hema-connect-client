@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Footer from "./components/Footer";
-import Navbar from "./components/Navbar";
 import PageTransition from "./components/PageTransition";
+import SiteChrome from "./components/SiteChrome";
+import { AuthProvider } from "./context/AuthContext";
 import "./globals.css";
 
 const inter = Inter({
@@ -23,11 +23,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-slate-50 text-slate-900">
-        <Navbar />
-        <main className="flex flex-1 flex-col">
-          <PageTransition>{children}</PageTransition>
-        </main>
-        <Footer />
+        <AuthProvider>
+          <SiteChrome>
+            <main className="flex flex-1 flex-col">
+              <PageTransition>{children}</PageTransition>
+            </main>
+          </SiteChrome>
+        </AuthProvider>
       </body>
     </html>
   );
