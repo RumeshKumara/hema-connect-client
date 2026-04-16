@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import PageTransition from "./components/PageTransition";
-import SiteChrome from "./components/SiteChrome";
-import { AuthProvider } from "./context/AuthContext";
-import "./globals.css";
+import PageTransition from "@/components/layout/PageTransition";
+import SiteChrome from "@/components/layout/SiteChrome";
+import { AuthProvider } from "@/context/AuthContext";
+import "../styles/globals.css";
 
 const inter = Inter({
   variable: "--font-inter",
