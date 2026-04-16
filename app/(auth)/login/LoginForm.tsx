@@ -4,12 +4,20 @@ import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
+  createUserWithEmailAndPassword,
+  fetchSignInMethodsForEmail,
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
 import { getFirebaseAuth } from "@/lib/firebase";
 import {
+  isPredefinedAdminCredentials,
+  PREDEFINED_ADMIN_EMAIL,
+  PREDEFINED_ADMIN_PASSWORD,
+} from "@/lib/constants";
+import {
+  createUserProfile,
   ensureGoogleUserProfile,
   getDashboardRoute,
   getUserProfile,
@@ -38,7 +46,43 @@ export default function LoginForm() {
 
     try {
       const auth = getFirebaseAuth();
-      const credential = await signInWithEmailAndPassword(auth, email, password);
+      const isAdminLogin = isPredefinedAdminCredentials(email, password);
+
+      let credential;
+
+      if (isAdminLogin) {
+        try {
+          credential = await signInWithEmailAndPassword(
+            auth,
+            PREDEFINED_ADMIN_EMAIL,
+            PREDEFINED_ADMIN_PASSWORD,
+          );
+        } catch {
+          const methods = await fetchSignInMethodsForEmail(auth, PREDEFINED_ADMIN_EMAIL);
+
+          if (methods.length > 0) {
+            throw new Error("Admin account exists but login failed.");
+          }
+
+          credential = await createUserWithEmailAndPassword(
+            auth,
+            PREDEFINED_ADMIN_EMAIL,
+            PREDEFINED_ADMIN_PASSWORD,
+          );
+        }
+
+        await createUserProfile({
+          uid: credential.user.uid,
+          fullName: "System Admin",
+          email: PREDEFINED_ADMIN_EMAIL,
+          accountType: "admin",
+        });
+
+        router.replace(getDashboardRoute("admin"));
+        return;
+      }
+
+      credential = await signInWithEmailAndPassword(auth, email, password);
       const userProfile = await getUserProfile(credential.user.uid);
 
       if (!userProfile) {

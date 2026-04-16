@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { getFirebaseAuth } from "@/lib/firebase";
+import { isPredefinedAdminEmail } from "@/lib/constants";
 import {
   AccountType,
   createUserProfile,
@@ -33,6 +34,12 @@ export default function RegisterForm() {
     event.preventDefault();
     setErrorMessage(null);
     setIsSubmitting(true);
+
+    if (isPredefinedAdminEmail(email)) {
+      setErrorMessage("This email is reserved for the system admin account.");
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       const auth = getFirebaseAuth();

@@ -53,15 +53,16 @@ export const createUserProfile = async ({
 }) => {
   const db = getFirestoreDb();
   const userRef = doc(db, "users", uid);
+  const existingProfile = await getDoc(userRef);
 
   await setDoc(userRef, {
     uid,
     fullName,
     email,
     accountType,
-    createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
-  });
+    ...(existingProfile.exists() ? {} : { createdAt: serverTimestamp() }),
+  }, { merge: true });
 };
 
 export const ensureGoogleUserProfile = async (user: User) => {
