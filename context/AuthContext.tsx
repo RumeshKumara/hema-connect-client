@@ -33,13 +33,12 @@ export function AuthProvider({
 }>) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(isFirebaseConfigured);
 
   useEffect(() => {
     if (!isFirebaseConfigured) {
-      setLoading(false);
       if (firebaseConfigError) {
-        console.error(firebaseConfigError);
+        console.warn(firebaseConfigError);
       }
       return;
     }
