@@ -6,9 +6,7 @@ import { useRouter } from "next/navigation";
 import {
   createUserWithEmailAndPassword,
   fetchSignInMethodsForEmail,
-  GoogleAuthProvider,
   signInWithEmailAndPassword,
-  signInWithPopup,
 } from "firebase/auth";
 import { getFirebaseAuth } from "@/lib/firebase";
 import {
@@ -18,7 +16,6 @@ import {
 } from "@/lib/constants";
 import {
   createUserProfile,
-  ensureGoogleUserProfile,
   getDashboardRoute,
   getUserProfile,
 } from "@/lib/userProfiles";
@@ -98,22 +95,6 @@ export default function LoginForm() {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    setErrorMessage(null);
-    setIsSubmitting(true);
-
-    try {
-      const auth = getFirebaseAuth();
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      const userProfile = await ensureGoogleUserProfile(result.user);
-      router.replace(getDashboardRoute(userProfile.accountType));
-    } catch {
-      setErrorMessage("Google sign-in failed. Please try again.");
-      setIsSubmitting(false);
-    }
-  };
-
   return (
     <section className="min-h-screen bg-[#ededee] px-6 pb-20 pt-10 sm:px-10 sm:pt-12">
       <div className="mx-auto mb-5 w-full max-w-md">
@@ -181,22 +162,6 @@ export default function LoginForm() {
             {isSubmitting ? "Signing in..." : "Login"}
           </button>
         </form>
-
-        <div className="my-5 flex items-center gap-3">
-          <div className="h-px flex-1 bg-zinc-200" />
-          <span className="text-xs font-semibold uppercase tracking-wide text-zinc-400">or</span>
-          <div className="h-px flex-1 bg-zinc-200" />
-        </div>
-
-        <button
-          type="button"
-          disabled={isSubmitting}
-          onClick={handleGoogleLogin}
-          className="flex w-full items-center justify-center gap-3 rounded-full border border-zinc-300 px-6 py-3 text-sm font-semibold text-zinc-800 transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-70"
-        >
-          <span aria-hidden="true">G</span>
-          Continue with Google
-        </button>
 
         <p className="mt-6 text-sm text-zinc-600">
           Don&apos;t have an account?{" "}

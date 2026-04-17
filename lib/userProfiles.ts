@@ -1,4 +1,3 @@
-import { User } from "firebase/auth";
 import {
   doc,
   getDoc,
@@ -63,25 +62,4 @@ export const createUserProfile = async ({
     updatedAt: serverTimestamp(),
     ...(existingProfile.exists() ? {} : { createdAt: serverTimestamp() }),
   }, { merge: true });
-};
-
-export const ensureGoogleUserProfile = async (user: User) => {
-  const existing = await getUserProfile(user.uid);
-
-  if (existing) {
-    return existing;
-  }
-
-  const profile: Omit<UserProfile, "createdAt" | "updatedAt"> = {
-    uid: user.uid,
-    fullName: user.displayName || "Google User",
-    email: user.email || "",
-    accountType: "donor",
-  };
-
-  await createUserProfile(profile);
-
-  return {
-    ...profile,
-  } as UserProfile;
 };

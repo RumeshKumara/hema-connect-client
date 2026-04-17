@@ -37,7 +37,6 @@ This project now includes a Firebase Auth + Firestore authentication flow with r
 2. Add your Firebase web app config values.
 3. Ensure Authentication is enabled in Firebase Console:
 	 - Email/Password
-	 - Google provider
 
 ### 2) Firestore user profile model
 
@@ -63,7 +62,6 @@ Allowed `accountType` values:
 - `/login`
 	- Email Address
 	- Password
-	- Continue with Sign in with Google
 - `/register`
 	- Full Name
 	- Email Address
