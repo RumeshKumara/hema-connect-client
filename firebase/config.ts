@@ -1,6 +1,4 @@
 import { FirebaseApp, getApp, getApps, initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -12,15 +10,35 @@ const firebaseConfig = {
 };
 
 const requiredConfig = [
-  "NEXT_PUBLIC_FIREBASE_API_KEY",
-  "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN",
-  "NEXT_PUBLIC_FIREBASE_PROJECT_ID",
-  "NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET",
-  "NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID",
-  "NEXT_PUBLIC_FIREBASE_APP_ID",
+  {
+    key: "NEXT_PUBLIC_FIREBASE_API_KEY",
+    value: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  },
+  {
+    key: "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN",
+    value: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  },
+  {
+    key: "NEXT_PUBLIC_FIREBASE_PROJECT_ID",
+    value: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  },
+  {
+    key: "NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET",
+    value: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  },
+  {
+    key: "NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID",
+    value: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  },
+  {
+    key: "NEXT_PUBLIC_FIREBASE_APP_ID",
+    value: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  },
 ] as const;
 
-const missingConfig = requiredConfig.filter((key) => !process.env[key]);
+const missingConfig = requiredConfig
+  .filter((entry) => !entry.value)
+  .map((entry) => entry.key);
 
 export const firebaseConfigError =
   missingConfig.length > 0
@@ -31,7 +49,7 @@ export const isFirebaseConfigured = firebaseConfigError === null;
 
 let app: FirebaseApp | null = null;
 
-function getFirebaseApp() {
+export function getFirebaseApp() {
   if (firebaseConfigError) {
     throw new Error(firebaseConfigError);
   }
@@ -41,12 +59,4 @@ function getFirebaseApp() {
   }
 
   return app;
-}
-
-export function getFirebaseAuth() {
-  return getAuth(getFirebaseApp());
-}
-
-export function getFirestoreDb() {
-  return getFirestore(getFirebaseApp());
 }

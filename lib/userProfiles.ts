@@ -5,7 +5,7 @@ import {
   setDoc,
   Timestamp,
 } from "firebase/firestore";
-import { getFirestoreDb } from "@/lib/firebase";
+import { getFirestoreDb } from "@/firebase/firestore";
 
 export type AccountType = "admin" | "donor" | "organization";
 

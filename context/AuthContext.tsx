@@ -11,10 +11,10 @@ import { User, onAuthStateChanged, signOut as firebaseSignOut } from "firebase/a
 import { doc, onSnapshot } from "firebase/firestore";
 import {
   firebaseConfigError,
-  getFirebaseAuth,
-  getFirestoreDb,
   isFirebaseConfigured,
-} from "@/lib/firebase";
+} from "@/firebase/config";
+import { getFirebaseAuth } from "@/firebase/auth";
+import { getFirestoreDb } from "@/firebase/firestore";
 import { UserProfile } from "@/lib/userProfiles";
 
 type AuthContextValue = {

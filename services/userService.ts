@@ -1,14 +1,15 @@
 import { createUserProfile, getUserProfile } from "@/lib/userProfiles";
+import { AccountType } from "@/lib/userProfiles";
 
 export async function fetchUserProfile(uid: string) {
-  return getUserProfile(uid);
+    return getUserProfile(uid);
 }
 
 export async function saveUserProfile(input: {
-  uid: string;
-  fullName: string;
-  email: string;
-  accountType: "admin" | "donor" | "organization";
+    uid: string;
+    fullName: string;
+    email: string;
+    accountType: AccountType;
 }) {
-  return createUserProfile(input);
+    return createUserProfile(input);
 }

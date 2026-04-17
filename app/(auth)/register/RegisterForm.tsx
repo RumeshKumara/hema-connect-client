@@ -4,7 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { getFirebaseAuth } from "@/lib/firebase";
+import { getFirebaseAuth } from "@/firebase/auth";
 import { isPredefinedAdminEmail } from "@/lib/constants";
 import {
   AccountType,
@@ -21,6 +21,7 @@ export default function RegisterForm() {
   const [email, setEmail] = useState("");
   const [accountType, setAccountType] = useState<AccountType>("donor");
   const [password, setPassword] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -137,17 +138,69 @@ export default function RegisterForm() {
             <label htmlFor="password" className="text-sm font-semibold text-zinc-700">
               Password
             </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              required
-              minLength={6}
-              autoComplete="new-password"
-              placeholder="Choose a secure password"
-              className="mt-2 w-full rounded-2xl border border-zinc-300 px-4 py-3 text-zinc-900 outline-none transition focus:border-red-500 focus:ring-2 focus:ring-red-200"
-            />
+            <div className="relative mt-2">
+              <input
+                id="password"
+                type={isPasswordVisible ? "text" : "password"}
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                required
+                minLength={6}
+                autoComplete="new-password"
+                placeholder="Choose a secure password"
+                className="w-full rounded-2xl border border-zinc-300 px-4 py-3 pr-12 text-zinc-900 outline-none transition focus:border-red-500 focus:ring-2 focus:ring-red-200"
+              />
+              <button
+                type="button"
+                onClick={() => setIsPasswordVisible((current) => !current)}
+                aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+                className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-zinc-500 transition hover:text-zinc-700"
+              >
+                {isPasswordVisible ? (
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                    className="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M3 3l18 18" strokeLinecap="round" strokeLinejoin="round" />
+                    <path
+                      d="M10.48 10.47a2 2 0 0 0 2.83 2.83"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M9.88 5.09A10.94 10.94 0 0 1 12 4c5 0 9.27 3.11 11 8-1.02 2.88-3.16 5.2-5.88 6.41"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M6.61 6.61C4.62 8.07 3.06 9.94 2 12c1.73 4.89 6 8 10 8 1.38 0 2.72-.3 3.96-.86"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                    className="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path
+                      d="M2 12s3.64-8 10-8 10 8 10 8-3.64 8-10 8-10-8-10-8z"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                )}
+              </button>
+            </div>
           </div>
 
           {errorMessage ? (
