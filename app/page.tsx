@@ -66,12 +66,12 @@ export default function Home() {
         connecting donors, organizations, and hospitals in real-time.
           </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-        <button
-          type="button"
+        <Link
+          href="/login"
           className="rounded-full bg-red-500 px-10 py-4 text-xl font-semibold text-white transition hover:bg-red-600"
         >
           Become a Donor
-        </button>
+        </Link>
         <Link
           href="/about"
           className="rounded-full border border-red-500/65 bg-black/40 px-10 py-4 text-xl font-semibold text-white transition hover:border-red-400 hover:bg-black/60"
@@ -132,12 +132,12 @@ export default function Home() {
             connecting donors, organizations, and hospitals in real-time.
           </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <button
-              type="button"
+            <Link
+              href="/login"
               className="rounded-full bg-white px-10 py-4 text-2xl font-semibold text-red-500 transition hover:bg-red-50"
             >
               Get Started Now
-            </button>
+            </Link>
             <Link
               href="/contact"
               className="rounded-full bg-[#cf0000] px-10 py-4 text-2xl font-semibold text-white transition hover:bg-[#bb0000]"
