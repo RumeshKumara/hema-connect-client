@@ -31,6 +31,10 @@ export default function LoginForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const setRoleCookie = (role: "admin" | "donor" | "organization") => {
+    document.cookie = `userRole=${role}; Path=/; Max-Age=2592000; SameSite=Lax`;
+  };
+
   const getFirebaseErrorMessage = (error: unknown) => {
     if (error instanceof Error) {
       return error.message;
@@ -90,6 +94,7 @@ export default function LoginForm() {
           throw new Error(`Admin profile save failed: ${getFirebaseErrorMessage(error)}`);
         }
 
+        setRoleCookie("admin");
         router.replace(getDashboardRoute("admin"));
         return;
       }
@@ -103,6 +108,7 @@ export default function LoginForm() {
         return;
       }
 
+      setRoleCookie(userProfile.accountType);
       router.replace(getDashboardRoute(userProfile.accountType));
     } catch (error) {
       setErrorMessage(getFirebaseErrorMessage(error));
@@ -132,18 +138,36 @@ export default function LoginForm() {
       </div>
 
       <AuthCard title="Login" subtitle="Sign in with your account credentials." maxWidthClassName="max-w-md">
-        <form className="mt-8 space-y-5" onSubmit={handleEmailLogin}>
+        <form className="mt-8 space-y-5" onSubmit={handleEmailLogin} autoComplete="off">
+          <input
+            type="text"
+            name="fake-username"
+            autoComplete="username"
+            tabIndex={-1}
+            aria-hidden="true"
+            className="hidden"
+          />
+          <input
+            type="password"
+            name="fake-password"
+            autoComplete="new-password"
+            tabIndex={-1}
+            aria-hidden="true"
+            className="hidden"
+          />
+
           <div>
             <label htmlFor="email" className="text-sm font-semibold text-zinc-700">
               Email Address
             </label>
             <input
               id="email"
+              name="login-email"
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               required
-              autoComplete="email"
+              autoComplete="off"
               placeholder="you@example.com"
               className="mt-2 w-full rounded-2xl border border-zinc-300 px-4 py-3 text-zinc-900 outline-none transition focus:border-red-500 focus:ring-2 focus:ring-red-200"
             />
@@ -156,11 +180,12 @@ export default function LoginForm() {
             <div className="relative mt-2">
               <input
                 id="password"
+                name="login-password"
                 type={isPasswordVisible ? "text" : "password"}
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 required
-                autoComplete="current-password"
+                autoComplete="new-password"
                 placeholder="Enter your password"
                 className="w-full rounded-2xl border border-zinc-300 px-4 py-3 pr-12 text-zinc-900 outline-none transition focus:border-red-500 focus:ring-2 focus:ring-red-200"
               />

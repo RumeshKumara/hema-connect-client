@@ -15,7 +15,23 @@ import {
 } from "@/firebase/config";
 import { getFirebaseAuth } from "@/firebase/auth";
 import { getFirestoreDb } from "@/firebase/firestore";
-import { UserProfile } from "@/lib/userProfiles";
+import { AccountType, UserProfile } from "@/lib/userProfiles";
+
+const setRoleCookie = (accountType: AccountType) => {
+  if (typeof document === "undefined") {
+    return;
+  }
+
+  document.cookie = `userRole=${accountType}; Path=/; Max-Age=2592000; SameSite=Lax`;
+};
+
+const clearRoleCookie = () => {
+  if (typeof document === "undefined") {
+    return;
+  }
+
+  document.cookie = "userRole=; Path=/; Max-Age=0; SameSite=Lax";
+};
 
 type AuthContextValue = {
   user: User | null;
@@ -57,23 +73,30 @@ export function AuthProvider({
 
       if (!currentUser) {
         setProfile(null);
+        clearRoleCookie();
         setLoading(false);
         return;
       }
+
+      setLoading(true);
 
       const profileRef = doc(db, "users", currentUser.uid);
       unsubscribeProfile = onSnapshot(
         profileRef,
         (snapshot) => {
           if (snapshot.exists()) {
-            setProfile(snapshot.data() as UserProfile);
+            const userProfile = snapshot.data() as UserProfile;
+            setProfile(userProfile);
+            setRoleCookie(userProfile.accountType);
           } else {
             setProfile(null);
+            clearRoleCookie();
           }
           setLoading(false);
         },
         () => {
           setProfile(null);
+          clearRoleCookie();
           setLoading(false);
         },
       );
