@@ -18,8 +18,9 @@ const ROLE_SIDEBAR_CONFIG: Record<
     accentClass: "text-rose-600",
     links: [
       { href: "/admin", label: "Overview" },
-      { href: "/admin/users", label: "Users" },
-      { href: "/admin/reports", label: "Reports" },
+      { href: "/admin/donor", label: "Donor" },
+      { href: "/admin/organization", label: "Organization" },
+      { href: "/admin/form-setting", label: "Form Setting" },
     ],
   },
   donor: {
@@ -58,7 +59,7 @@ const getRoleFromPath = (pathname: string): AccountType | null => {
   return null;
 };
 
-export default function Sidebar() {
+export default function DashboardSidebar() {
   const pathname = usePathname();
   const { profile } = useAuth();
 

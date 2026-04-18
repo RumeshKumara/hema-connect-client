@@ -2,9 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { getDashboardRoute } from "@/lib/userProfiles";
-import { useAuth } from "@/context/AuthContext";
+import { usePathname } from "next/navigation";
 
 const PUBLIC_LINKS = [
   { href: "/", label: "Home" },
@@ -13,9 +11,7 @@ const PUBLIC_LINKS = [
 ];
 
 export default function Navbar() {
-  const router = useRouter();
   const pathname = usePathname();
-  const { user, profile, signOut } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
@@ -62,8 +58,6 @@ export default function Navbar() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const dashboardHref = profile ? getDashboardRoute(profile.accountType) : "/login";
-
   const isLinkActive = (href: string) => {
     if (href === "/") {
       return pathname === "/";
@@ -75,12 +69,6 @@ export default function Navbar() {
   const closeMenus = () => {
     setIsMobileMenuOpen(false);
     setIsLanguageMenuOpen(false);
-  };
-
-  const handleSignOut = async () => {
-    closeMenus();
-    await signOut();
-    router.push("/login");
   };
 
   return (
@@ -203,32 +191,13 @@ export default function Navbar() {
             ) : null}
           </div>
 
-          {user && profile ? (
-            <>
-              <Link
-                href={dashboardHref}
-                onClick={closeMenus}
-                className="rounded-full border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-800 transition hover:bg-zinc-100"
-              >
-                Dashboard
-              </Link>
-              <button
-                type="button"
-                onClick={handleSignOut}
-                className="rounded-full bg-zinc-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-800"
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <Link
-              href="/login"
-              onClick={closeMenus}
-              className="rounded-full bg-red-500 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-red-600"
-            >
-              Login
-            </Link>
-          )}
+          <Link
+            href="/login"
+            onClick={closeMenus}
+            className="rounded-full bg-red-500 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-red-600"
+          >
+            Login
+          </Link>
         </div>
 
         {/* Mobile menu toggle shown on smaller screens. */}
@@ -313,32 +282,13 @@ export default function Navbar() {
           <div className="my-3 h-px bg-red-100" />
 
           <div className="grid gap-2">
-            {user && profile ? (
-              <>
-                <Link
-                  href={dashboardHref}
-                  onClick={closeMenus}
-                  className="rounded-full border border-zinc-300 px-4 py-2.5 text-center text-sm font-medium text-zinc-800 transition hover:bg-zinc-100"
-                >
-                  Dashboard
-                </Link>
-                <button
-                  type="button"
-                  onClick={handleSignOut}
-                  className="rounded-full bg-zinc-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-800"
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <Link
-                href="/login"
-                onClick={closeMenus}
-                className="rounded-full bg-red-500 px-5 py-2.5 text-center text-sm font-medium text-white transition hover:bg-red-600"
-              >
-                Login
-              </Link>
-            )}
+            <Link
+              href="/login"
+              onClick={closeMenus}
+              className="rounded-full bg-red-500 px-5 py-2.5 text-center text-sm font-medium text-white transition hover:bg-red-600"
+            >
+              Login
+            </Link>
           </div>
         </div>
       ) : null}
