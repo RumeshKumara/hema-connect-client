@@ -2,6 +2,7 @@
 
 import { ReactNode } from "react";
 import { usePathname } from "next/navigation";
+import DashboardNavbar from "./DashboardNavbar";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
 
@@ -16,6 +17,10 @@ export default function SiteChrome({ children }: SiteChromeProps) {
     pathname === "/register" ||
     pathname.startsWith("/login/") ||
     pathname.startsWith("/register/");
+  const isDashboardRoute =
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/donor") ||
+    pathname.startsWith("/organization");
 
   if (isAuthRoute) {
     return <>{children}</>;
@@ -23,7 +28,7 @@ export default function SiteChrome({ children }: SiteChromeProps) {
 
   return (
     <>
-      <Navbar />
+      {isDashboardRoute ? <DashboardNavbar /> : <Navbar />}
       {children}
       <Footer />
     </>

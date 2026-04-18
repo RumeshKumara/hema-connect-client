@@ -6,6 +6,12 @@ import { usePathname, useRouter } from "next/navigation";
 import { getDashboardRoute } from "@/lib/userProfiles";
 import { useAuth } from "@/context/AuthContext";
 
+const PUBLIC_LINKS = [
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
+];
+
 export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
@@ -56,14 +62,15 @@ export default function Navbar() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Primary navigation links used in desktop and mobile menus.
-  const links = [
-    { href: "/", label: "Home" },
-    { href: "/about", label: "About" },
-    { href: "/contact", label: "Contact" },
-  ];
-
   const dashboardHref = profile ? getDashboardRoute(profile.accountType) : "/login";
+
+  const isLinkActive = (href: string) => {
+    if (href === "/") {
+      return pathname === "/";
+    }
+
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
 
   const closeMenus = () => {
     setIsMobileMenuOpen(false);
@@ -107,8 +114,8 @@ export default function Navbar() {
 
         {/* Desktop navigation links with active state styling. */}
         <div className="ml-auto hidden items-center gap-2 md:flex">
-          {links.map((link) => {
-            const isActive = pathname === link.href;
+          {PUBLIC_LINKS.map((link) => {
+            const isActive = isLinkActive(link.href);
 
             return (
               <Link
@@ -118,8 +125,8 @@ export default function Navbar() {
                 aria-current={isActive ? "page" : undefined}
                 className={`rounded-full px-5 py-2.5 text-base leading-none font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#ffd8d8] ${
                   isActive
-                    ? "bg-[#ececec] text-red-600"
-                    : "text-[#232323] hover:bg-red-50/70 hover:text-red-500"
+                    ? "bg-red-50 text-red-700"
+                    : "text-[#232323] hover:bg-red-50/70 hover:text-red-600"
                 }`}
               >
                 {link.label}
@@ -183,8 +190,8 @@ export default function Navbar() {
                       }}
                       className={`flex w-full items-center justify-between px-4 py-2 text-left text-sm transition ${
                         isSelected
-                          ? "bg-red-50 text-red-600"
-                          : "text-[#222] hover:bg-red-50/70"
+                          ? "bg-red-50 text-red-700"
+                          : "text-[#222] hover:bg-red-50/70 hover:text-red-600"
                       }`}
                     >
                       {language}
@@ -258,8 +265,8 @@ export default function Navbar() {
           className="mx-auto mt-2 w-full max-w-7xl overflow-hidden rounded-3xl border border-red-100 bg-[#f8f8f8] p-3 shadow-[0_10px_25px_rgba(0,0,0,0.16)] md:hidden"
         >
           <div className="grid gap-1">
-            {links.map((link) => {
-              const isActive = pathname === link.href;
+            {PUBLIC_LINKS.map((link) => {
+              const isActive = isLinkActive(link.href);
 
               return (
                 <Link
@@ -269,8 +276,8 @@ export default function Navbar() {
                   aria-current={isActive ? "page" : undefined}
                   className={`rounded-2xl px-4 py-3 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f4f4f4] ${
                     isActive
-                      ? "bg-red-50 text-red-600"
-                      : "text-[#232323] hover:bg-red-50/70 hover:text-red-500"
+                      ? "bg-red-50 text-red-700"
+                      : "text-[#232323] hover:bg-red-50/70 hover:text-red-600"
                   }`}
                 >
                   {link.label}
@@ -292,8 +299,8 @@ export default function Navbar() {
                   onClick={() => setSelectedLanguage(language)}
                   className={`flex items-center justify-between rounded-2xl px-4 py-2.5 text-left text-sm transition ${
                     isSelected
-                      ? "bg-red-50 text-red-600"
-                      : "text-[#222] hover:bg-red-50/70"
+                      ? "bg-red-50 text-red-700"
+                      : "text-[#222] hover:bg-red-50/70 hover:text-red-600"
                   }`}
                 >
                   {language}
