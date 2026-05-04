@@ -14,8 +14,7 @@ import {
   isFirebaseConfigured,
 } from "@/firebase/config";
 import { getFirebaseAuth } from "@/firebase/auth";
-import { getFirestoreDb } from "@/firebase/firestore";
-import { AccountType, UserProfile } from "@/lib/userProfiles";
+import { getFirestoreDb } from "@/firebase/firestore";import { AccountType, UserProfile } from "@/lib/userProfiles";
 
 const setRoleCookie = (accountType: AccountType) => {
   if (typeof document === "undefined") {
