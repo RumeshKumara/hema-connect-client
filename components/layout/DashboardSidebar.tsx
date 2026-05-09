@@ -83,7 +83,7 @@ export default function DashboardSidebar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`block rounded-xl px-3 py-2 text-sm font-medium transition ${
+              className={`block rounded-full px-6 py-2 text-sm font-medium transition ${
                 isActive
                   ? "bg-zinc-900 text-white"
                   : "text-zinc-700 hover:bg-zinc-100"
