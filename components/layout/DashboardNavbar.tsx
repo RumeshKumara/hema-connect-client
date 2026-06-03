@@ -172,11 +172,13 @@ export default function DashboardNavbar() {
     pathname === href || pathname.startsWith(`${href}/`);
 
   const closeMenus = () => {
+    // Keep the drawer and language menu in sync whenever navigation changes.
     setIsMobileMenuOpen(false);
     setIsLanguageMenuOpen(false);
   };
 
   const handleSignOut = async () => {
+    // Reset UI state before leaving the dashboard.
     closeMenus();
     await signOut();
     router.push("/login");
@@ -186,7 +188,7 @@ export default function DashboardNavbar() {
     return (
       <header className="fixed left-0 right-0 top-0 z-30 px-4 pt-4 sm:px-6">
         <nav
-          className={`mx-auto flex w-full items-center gap-3 rounded-full border-l-3 border-rose-500 bg-rose-50/60 px-4 py-2.5 shadow-[0_12px_30px_rgba(0,0,0,0.28)] transition-all duration-300 ease-out sm:gap-4 sm:px-6 ${
+          className={`mx-auto flex w-full items-center gap-3 rounded-full border-l-3 border-black bg-rose-50/60 px-4 py-2.5 shadow-[0_12px_30px_rgba(0,0,0,0.28)] transition-all duration-300 ease-out sm:gap-4 sm:px-6 ${
             isScrolled ? "max-w-6xl" : "max-w-7xl"
           }`}
         >
@@ -238,13 +240,16 @@ export default function DashboardNavbar() {
 
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <div className="flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-2 py-1">
+              {/* Use the first initial as a compact avatar when no profile image exists. */}
               <span className="grid h-8 w-8 place-items-center rounded-full bg-rose-100 text-xs font-semibold text-rose-700">
                 {profile?.fullName?.slice(0, 1)?.toUpperCase() || "A"}
               </span>
               <div className="pr-1 sm:pr-2">
+                {/* Show the signed-in admin name, with a safe fallback for loading states. */}
                 <p className="max-w-24 truncate text-xs font-medium text-zinc-900 sm:max-w-32 sm:text-sm">
                   {profile?.fullName || "Admin User"}
                 </p>
+                {/* Keep the role label explicit to avoid ambiguity in the compact header. */}
                 <p className="text-[11px] text-zinc-500 sm:text-xs">Administrator</p>
               </div>
             </div>
@@ -432,6 +437,7 @@ export default function DashboardNavbar() {
           className={`mx-auto mt-2 w-full max-w-7xl overflow-hidden rounded-3xl border p-3 shadow-[0_10px_25px_rgba(0,0,0,0.16)] md:hidden ${dashboardMeta.surfaceClass} ${theme.menuBorderClass}`}
         >
           <div className="grid gap-1">
+            {/* Primary navigation for the active dashboard role. */}
             {links.map((link) => {
               const isActive = isLinkActive(link.href);
 
@@ -462,6 +468,7 @@ export default function DashboardNavbar() {
           ) : null}
 
           <div className="grid gap-2">
+            {/* Keep language choices available inside the mobile drawer. */}
             {languageOptions.map((language) => {
               const isSelected = selectedLanguage === language;
 
